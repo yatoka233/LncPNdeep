@@ -26,7 +26,7 @@ from transformers import BigBirdConfig, LongformerConfig
 SCRIPT_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPT_DIR))
 
-from download_weights import get_nucleotide_embedding_dir  # noqa: E402
+from download_weights import get_nucleotide_embedding_dir, get_weights_pretrain_dir  # noqa: E402
 
 NUCLEOTIDE_EMBEDDING_DIR = get_nucleotide_embedding_dir(SCRIPT_DIR)
 sys.path.insert(0, str(NUCLEOTIDE_EMBEDDING_DIR))
@@ -266,7 +266,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--weights_dir",
-        default=str(NUCLEOTIDE_EMBEDDING_DIR / "weights" / "pretrain"),
+        default=str(get_weights_pretrain_dir(SCRIPT_DIR)),
         help="Directory Location for save.*.params",
     )
     parser.add_argument(

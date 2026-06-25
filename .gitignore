@@ -1,4 +1,4 @@
-# Nested copy of code (flat layout is used for GitHub)
+# Nested local copies
 Nucleotide Embedding/
 
 # Legacy local-only files
@@ -9,6 +9,7 @@ test_sequences.fasta
 *.params
 *.h5
 Nucleotide Embedding/weights/
+simulation_and_pretrain_code/weights/
 weights/
 
 # Python

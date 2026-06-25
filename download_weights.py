@@ -20,14 +20,58 @@ HF_REPO_ID = "yatoka/LncPNdeep"
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 
+RNA_WEIGHT_FILENAMES = (
+    "save.Longformer.pretrain.epoch20.params",
+    "save.bigbird.pretrain.epoch20.params",
+    "save.bigbird_full.pretrain.epoch20.params",
+)
+FINAL_CLASSIFIER_NAME = "ProteinTransAllfeature_ResCNN2_07_08.h5"
 
-def get_nucleotide_embedding_dir(base_dir: Path | None = None) -> Path:
-    """Return nucleotide embedding code directory (supports flat or nested layouts)."""
+
+def get_pretrain_code_dir(base_dir: Path | None = None) -> Path:
+    """Return directory containing RNA model definitions (for imports)."""
     root = base_dir or SCRIPT_DIR
-    nested = root / "Nucleotide Embedding"
-    if nested.is_dir():
-        return nested
+    for folder_name in ("simulation_and_pretrain_code", "Nucleotide Embedding"):
+        candidate = root / folder_name
+        if candidate.is_dir() and (candidate / "model").is_dir():
+            return candidate
     return root
+
+
+# Backward-compatible alias used by inference scripts.
+get_nucleotide_embedding_dir = get_pretrain_code_dir
+
+
+def _weights_pretrain_search_dirs(base_dir: Path) -> List[Path]:
+    return [
+        base_dir / "simulation_and_pretrain_code" / "weights" / "pretrain",
+        base_dir / "Nucleotide Embedding" / "weights" / "pretrain",
+        base_dir / "weights" / "pretrain",
+    ]
+
+
+def get_default_weights_pretrain_dir(base_dir: Path | None = None) -> Path:
+    """Canonical directory where download_weights.py saves RNA checkpoints."""
+    root = base_dir or SCRIPT_DIR
+    return root / "simulation_and_pretrain_code" / "weights" / "pretrain"
+
+
+def get_weights_pretrain_dir(base_dir: Path | None = None) -> Path:
+    """Return an existing pretrain weights directory, or the default download target."""
+    root = base_dir or SCRIPT_DIR
+    for directory in _weights_pretrain_search_dirs(root):
+        if directory.is_dir() and any(directory.glob("*.params")):
+            return directory
+    return get_default_weights_pretrain_dir(root)
+
+
+def resolve_rna_weight_path(filename: str, base_dir: Path | None = None) -> Path | None:
+    root = base_dir or SCRIPT_DIR
+    for directory in _weights_pretrain_search_dirs(root):
+        path = directory / filename
+        if path.is_file():
+            return path
+    return None
 
 
 def get_weight_targets(base_dir: Path | None = None) -> List[Tuple[str, Path]]:
@@ -37,7 +81,7 @@ def get_weight_targets(base_dir: Path | None = None) -> List[Tuple[str, Path]]:
     Returns list of (hf_filename, local_path).
     """
     root = base_dir or SCRIPT_DIR
-    pretrain_dir = get_nucleotide_embedding_dir(root) / "weights" / "pretrain"
+    pretrain_dir = get_default_weights_pretrain_dir(root)
     return [
         (
             "weights/rna_pretrain/save.Longformer.pretrain.epoch20.params",
@@ -53,18 +97,21 @@ def get_weight_targets(base_dir: Path | None = None) -> List[Tuple[str, Path]]:
         ),
         (
             "weights/final_classifier/ProteinTransAllfeature_ResCNN2_07_08.h5",
-            root / "ProteinTransAllfeature_ResCNN2_07_08.h5",
+            root / FINAL_CLASSIFIER_NAME,
         ),
     ]
 
 
 def weights_ready(base_dir: Path | None = None) -> bool:
     """Return True if all required weight files exist locally."""
-    return all(path.is_file() for _, path in get_weight_targets(base_dir))
+    root = base_dir or SCRIPT_DIR
+    if not (root / FINAL_CLASSIFIER_NAME).is_file():
+        return False
+    return all(resolve_rna_weight_path(name, root) is not None for name in RNA_WEIGHT_FILENAMES)
 
 
 def missing_weight_files(base_dir: Path | None = None) -> List[Path]:
-    """Return local paths that are missing."""
+    """Return canonical local paths that are missing (for user-facing messages)."""
     return [path for _, path in get_weight_targets(base_dir) if not path.is_file()]
 
 

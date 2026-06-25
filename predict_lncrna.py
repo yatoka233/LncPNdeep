@@ -34,13 +34,14 @@ from extract_nucleotide_embeddings import (
 )
 from download_weights import (
     get_nucleotide_embedding_dir,
+    get_weights_pretrain_dir,
     missing_weight_files,
     weights_ready,
 )
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 DEFAULT_MODEL_H5 = SCRIPT_DIR / "ProteinTransAllfeature_ResCNN2_07_08.h5"
-DEFAULT_WEIGHTS_DIR = get_nucleotide_embedding_dir(SCRIPT_DIR) / "weights" / "pretrain"
+DEFAULT_WEIGHTS_DIR = get_weights_pretrain_dir(SCRIPT_DIR)
 
 _PROT_BERT_TOKENIZER = None
 _PROT_BERT_MODEL = None
