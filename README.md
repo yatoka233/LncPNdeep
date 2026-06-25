@@ -16,11 +16,11 @@
 
 ## Method overview
 
-LncPNdeep uses a **two-stage, multi-modal** design (see figure above):
+LncPNdeep uses a **two-stage, multi-modal** deep learning design (see figure above):
 
 ### 1. Nucleotide embedding extraction
 
-Input RNA sequences are tokenized at **k-mer = 1** (single nucleotides). Long sequences are split into overlapping segments (1,000–2,000 nt) and passed through three independently pretrained RNA masked language models:
+Input RNA sequences are tokenized at **k-mer = 1**. Long sequences are split into overlapping segments (1,000–2,000 nt) and passed through three independently pretrained RNA masked language models:
 
 | Model | Architecture | Embedding dim | Role |
 | --- | --- | --- | --- |
@@ -42,7 +42,7 @@ Each RNA sequence is translated in **three reading frames**. Open reading frames
 
 ### 3. Final classification
 
-Six inputs are fed to a **TensorFlow/Keras** classifier (`ProteinTransAllfeature_ResCNN2_07_08.h5`):
+Six input embeddings are fed to a deep learning classifier (`ProteinTransAllfeature_ResCNN2_07_08.h5`):
 
 1. Average peptide embedding  
 2. Fake peptide embedding  
@@ -76,7 +76,7 @@ python download_weights.py --check
 
 ## Usage
 
-### End-to-end prediction
+### Classification
 
 ```bash
 python predict_lncrna.py \
@@ -143,11 +143,3 @@ If you use LncPNdeep, please cite our preprint:
   url     = {https://www.biorxiv.org/content/10.1101/2023.11.29.569323v1}
 }
 ```
-
-*(Update the BibTeX title and authors when the final citation is available.)*
-
----
-
-## License
-
-Please refer to the repository license file. Third-party models (ProtBERT, BigBird, Longformer) are subject to their respective licenses.
