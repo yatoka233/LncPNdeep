@@ -1,0 +1,41 @@
+# Nested copy of code (flat layout is used for GitHub)
+Nucleotide Embedding/
+
+# Legacy local-only files
+FinalModel.py
+test_sequences.fasta
+
+# Model weights (hosted on Hugging Face: yatoka/LncPNdeep)
+*.params
+*.h5
+Nucleotide Embedding/weights/
+weights/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+*.so
+.Python
+venv/
+.venv/
+env/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Pipeline outputs
+test_output/
+embeddings/
+work/
+results/
+*.npy
+
+# Logs
+*.log
