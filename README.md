@@ -14,7 +14,7 @@
 
 ---
 
-## Method overview
+## Method
 
 LncPNdeep uses a **two-stage, multi-modal** deep learning design (see figure above):
 
@@ -22,7 +22,7 @@ LncPNdeep uses a **two-stage, multi-modal** deep learning design (see figure abo
 
 Input RNA sequences are tokenized at **k-mer = 1**. Long sequences are split into overlapping segments (1,000–2,000 nt) and passed through three independently pretrained RNA masked language models:
 
-| Model | Architecture | Embedding dim | Role |
+| Model | Architecture | Embedding | Role |
 | --- | --- | --- | --- |
 | **Longformer256** | Longformer (4 layers, 8 heads) | 256 | Long-range nucleotide context |
 | **Bigbird256** | BigBird (4 layers, 8 heads) | 256 | Sparse attention nucleotide features |
